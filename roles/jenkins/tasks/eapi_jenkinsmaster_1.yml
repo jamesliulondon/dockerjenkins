@@ -1,0 +1,39 @@
+---
+- name: pull an image
+  docker_image:
+    name: jenkins
+
+- name: create java tools location
+  file:
+     path=/var/log/jenkins
+     state=directory
+     mode=0777
+
+- name: create build mount
+  file:
+    path=/var/log/jenkins/eapi_jenkinsmaster_1/build
+    state=directory
+    mode=0777
+
+- name: jenkins master container
+  docker_container:
+    name: eapi_jenkinsmaster_1
+    image: jenkinsmaster
+    state: started
+    ports:
+      - "8001:8080"
+      - "50000:50000"
+    volumes:
+    - /var/log/jenkins/eapi_jenkinsmaster_1/build:/var/jenkins_home/jobs
+    - /var/log/jenkins:/opt
+    env:
+      JAVA_OPTS: -Dhudson.footerURL=http://mycompany.com -Djenkins.install.runSetupWizard=false -Djava.util.logging.config.file=/opt/log.properties
+
+
+- name: Add a container to a network, leaving existing containers connected
+  docker_network:
+    name: eapi_jenkins_network
+    connected:
+      - eapi_jenkinsmaster_1
+    appends: yes
+

@@ -1,0 +1,14 @@
+---
+
+- name: add yum utils
+  yum: name=yum-utils state=installed
+
+- name: add repo
+  command: /usr/bin/yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: install docker-ce
+  yum: name=docker-ce state=installed update_cache=yes
+  notify: restart docker
+
+- name: add docker module
+  pip: name=docker-py state=present

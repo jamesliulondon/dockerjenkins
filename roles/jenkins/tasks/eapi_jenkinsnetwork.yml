@@ -1,0 +1,10 @@
+---
+
+- name: Create a network
+  docker_network:
+    name: eapi_jenkins_network
+    ipam_options:
+      subnet: '10.3.26.0/16'
+      gateway: 10.3.26.1
+
+#docker network create --subnet 172.20.0.0/16 --ip-range 172.20.240.0/20 multi-host-network

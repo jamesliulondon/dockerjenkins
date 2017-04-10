@@ -1,0 +1,29 @@
+#
+# Super simple example of a Dockerfile
+#
+FROM centos:latest
+MAINTAINER James Liu "jliu@hotmail.com"
+
+RUN yum install -y openssh-server wget tcpdump telnet net-tools make gcc* ;wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm -O /root/java.rpm && rpm -i /root/java.rpm ;  yum install -y maven ;mkdir -p /root/.ssh/; mkdir /var/jenkins
+
+RUN useradd -m -d /var/jenkins jenkins && mkdir -p /var/jenkins/.ssh
+ADD pubkeys /root/.ssh/authorized_keys
+ADD pubkeys /var/jenkins/.ssh/authorized_keys
+RUN chmod 0700 /root/.ssh; chmod 0644 /root/.ssh/authorized_keys
+RUN chmod 0700 /var/jenkins/.ssh; chmod 0644 /var/jenkins/.ssh/authorized_keys
+RUN chown -R jenkins.jenkins  /var/jenkins/.ssh
+
+
+
+ADD ./start.sh /start.sh
+RUN mkdir /var/run/sshd
+
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' 
+
+RUN chmod 755 /start.sh
+ADD start.sh start.sh
+
+WORKDIR /root
+EXPOSE 22
+RUN /start.sh
+ENTRYPOINT ["/usr/sbin/sshd", "-D"]

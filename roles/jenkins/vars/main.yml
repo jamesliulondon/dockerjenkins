@@ -1,0 +1,4 @@
+---
+
+host_jobs_root: /var/log/jenkins
+jenkins_tools_location: /var/log/jenkins

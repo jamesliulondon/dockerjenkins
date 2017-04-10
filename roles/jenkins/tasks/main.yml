@@ -1,0 +1,10 @@
+---
+#- name: download jenkins dockerfile
+#  get_url: 
+#    url: https://raw.githubusercontent.com/jenkinsci/docker/master/Dockerfile
+#    dest: /root/jenkins_dockerfile
+
+
+- include: eapi_jenkinsnetwork.yml
+- include: eapi_jenkinsmaster_1.yml
+- include: eapi_jenkinsslave_1.yml
